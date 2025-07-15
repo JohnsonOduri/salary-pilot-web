@@ -50,11 +50,7 @@ export const Navbar = () => {
             >
               Career Switch
             </Link>
-            <Link to="/salary-prediction">
-              <Button variant="default" className="bg-gradient-primary hover:opacity-90">
-                Get Started
-              </Button>
-            </Link>
+            
           </div>
 
           {/* Mobile menu button */}

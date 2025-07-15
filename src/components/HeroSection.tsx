@@ -35,34 +35,27 @@ export const HeroSection = () => {
               with AI-powered insights tailored just for you.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Link to="/salary-prediction">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-primary hover:opacity-90 shadow-card group"
-                >
-                  Explore Features
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              
               <Button 
-                size="lg" 
-                variant="outline"
-                className="border-primary text-primary hover:bg-primary-light/20"
+              size="lg" 
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary-light/20"
               >
-                Watch Demo
+              Watch Demo
               </Button>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border/50">
+              
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">50K+</div>
-                <div className="text-sm text-muted-foreground">Salary Predictions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">25K+</div>
-                <div className="text-sm text-muted-foreground">Resumes Analyzed</div>
+                <div className="text-2xl font-bold text-primary">91.82%</div>
+                <div className="text-sm text-muted-foreground">
+                  R
+                  <sup>2</sup>
+                  {" "}Score
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">98%</div>

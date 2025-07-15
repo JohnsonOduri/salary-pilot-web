@@ -122,8 +122,8 @@ const CareerSwitch = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+   
+      <div className="max-w-7xl mx-auto p-6">
         {/* Back Button */}
         <Link to="/" className="inline-flex items-center text-primary hover:text-primary-glow mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -335,7 +335,7 @@ const CareerSwitch = () => {
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 
