@@ -22,8 +22,8 @@ const SalaryPrediction = () => {
     education: '',
     jobTitle: '',
     skills: '',
-    location: '',
-    company: ''
+    age: '',
+    gender: ''
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -135,26 +135,27 @@ const SalaryPrediction = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="age">Age</Label>
                 <Input
-                  id="location"
-                  placeholder="e.g., Bangalore, Mumbai"
-                  value={formData.location}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  id="age"
+                  type="number"
+                  placeholder="e.g., 28"
+                  value={formData.age}
+                  onChange={(e) => handleInputChange('age', e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="company">Company Size</Label>
-                <Select onValueChange={(value) => handleInputChange('company', value)}>
+                <Label htmlFor="gender">Gender</Label>
+                <Select onValueChange={(value) => handleInputChange('gender', value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select company size" />
+                    <SelectValue placeholder="Select your Gender" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="startup">Startup (1-50)</SelectItem>
-                    <SelectItem value="medium">Medium (51-500)</SelectItem>
-                    <SelectItem value="large">Large (500+)</SelectItem>
-                    <SelectItem value="enterprise">Enterprise (5000+)</SelectItem>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+
                   </SelectContent>
                 </Select>
               </div>
