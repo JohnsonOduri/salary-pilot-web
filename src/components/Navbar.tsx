@@ -1,50 +1,60 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    element?.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
-  };
+  const location = useLocation();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-soft">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center">
+          <Link to="/" className="flex items-center">
             <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               SalaryPilot
             </h1>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection('salary-prediction')}
-              className="text-foreground hover:text-primary transition-colors"
+            <Link
+              to="/salary-prediction"
+              className={`transition-colors ${
+                location.pathname === '/salary-prediction' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Salary Prediction
-            </button>
-            <button
-              onClick={() => scrollToSection('resume-checker')}
-              className="text-foreground hover:text-primary transition-colors"
+            </Link>
+            <Link
+              to="/resume-checker"
+              className={`transition-colors ${
+                location.pathname === '/resume-checker' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Resume Checker
-            </button>
-            <button
-              onClick={() => scrollToSection('career-switch')}
-              className="text-foreground hover:text-primary transition-colors"
+            </Link>
+            <Link
+              to="/career-switch"
+              className={`transition-colors ${
+                location.pathname === '/career-switch' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Career Switch
-            </button>
-            <Button variant="default" className="bg-gradient-primary hover:opacity-90">
-              Get Started
-            </Button>
+            </Link>
+            <Link to="/salary-prediction">
+              <Button variant="default" className="bg-gradient-primary hover:opacity-90">
+                Get Started
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -62,27 +72,44 @@ export const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden py-4 space-y-4 animate-fade-in">
-            <button
-              onClick={() => scrollToSection('salary-prediction')}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+            <Link
+              to="/salary-prediction"
+              onClick={() => setIsMenuOpen(false)}
+              className={`block w-full text-left py-2 transition-colors ${
+                location.pathname === '/salary-prediction' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Salary Prediction
-            </button>
-            <button
-              onClick={() => scrollToSection('resume-checker')}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+            </Link>
+            <Link
+              to="/resume-checker"
+              onClick={() => setIsMenuOpen(false)}
+              className={`block w-full text-left py-2 transition-colors ${
+                location.pathname === '/resume-checker' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Resume Checker
-            </button>
-            <button
-              onClick={() => scrollToSection('career-switch')}
-              className="block w-full text-left text-foreground hover:text-primary transition-colors py-2"
+            </Link>
+            <Link
+              to="/career-switch"
+              onClick={() => setIsMenuOpen(false)}
+              className={`block w-full text-left py-2 transition-colors ${
+                location.pathname === '/career-switch' 
+                  ? 'text-primary font-medium' 
+                  : 'text-foreground hover:text-primary'
+              }`}
             >
               Career Switch
-            </button>
-            <Button variant="default" className="w-full bg-gradient-primary hover:opacity-90 mt-4">
-              Get Started
-            </Button>
+            </Link>
+            <Link to="/salary-prediction" onClick={() => setIsMenuOpen(false)}>
+              <Button variant="default" className="w-full bg-gradient-primary hover:opacity-90 mt-4">
+                Get Started
+              </Button>
+            </Link>
           </div>
         )}
       </div>

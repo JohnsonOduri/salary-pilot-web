@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { MapPin, TrendingUp, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { MapPin, TrendingUp, Clock, CheckCircle, Loader2, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface CareerPath {
   title: string;
@@ -19,7 +19,7 @@ interface CareerPath {
   difficulty: 'Easy' | 'Moderate' | 'Challenging';
 }
 
-export const CareerSwitch = () => {
+const CareerSwitch = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [careerPaths, setCareerPaths] = useState<CareerPath[]>([]);
   const { toast } = useToast();
@@ -122,12 +122,18 @@ export const CareerSwitch = () => {
   };
 
   return (
-    <section id="career-switch" className="py-20 bg-gradient-subtle">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-subtle pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
+        <Link to="/" className="inline-flex items-center text-primary hover:text-primary-glow mb-8 transition-colors">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
+
         <div className="text-center mb-12 animate-fade-in">
           <div className="flex items-center justify-center mb-4">
             <MapPin className="h-10 w-10 text-primary mr-3" />
-            <h2 className="text-3xl md:text-4xl font-bold">Career Switch Planner</h2>
+            <h1 className="text-3xl md:text-4xl font-bold">Career Switch Planner</h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Discover new career paths tailored to your skills, interests, and goals
@@ -329,6 +335,8 @@ export const CareerSwitch = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
+
+export default CareerSwitch;

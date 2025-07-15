@@ -1,13 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Brain, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
 
 export const HeroSection = () => {
-  const scrollToFeatures = () => {
-    const element = document.getElementById('salary-prediction');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden">
       {/* Background decorative elements */}
@@ -40,14 +36,15 @@ export const HeroSection = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button 
-                size="lg" 
-                onClick={scrollToFeatures}
-                className="bg-gradient-primary hover:opacity-90 shadow-card group"
-              >
-                Explore Features
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <Link to="/salary-prediction">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-primary hover:opacity-90 shadow-card group"
+                >
+                  Explore Features
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
               <Button 
                 size="lg" 
                 variant="outline"

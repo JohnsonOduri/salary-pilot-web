@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { FileText, Upload, CheckCircle, AlertCircle, Loader2, Download } from "lucide-react";
+import { FileText, Upload, CheckCircle, AlertCircle, Loader2, Download, ArrowLeft } from "lucide-react";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface ResumeAnalysis {
   overallScore: number;
@@ -17,7 +18,7 @@ interface ResumeAnalysis {
   improvements: string[];
 }
 
-export const ResumeChecker = () => {
+const ResumeChecker = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -114,19 +115,19 @@ export const ResumeChecker = () => {
     return "text-destructive";
   };
 
-  const getScoreBgColor = (score: number) => {
-    if (score >= 90) return "bg-success";
-    if (score >= 75) return "bg-warning";
-    return "bg-destructive";
-  };
-
   return (
-    <section id="resume-checker" className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Back Button */}
+        <Link to="/" className="inline-flex items-center text-primary hover:text-primary-glow mb-8 transition-colors">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Link>
+
         <div className="text-center mb-12 animate-fade-in">
           <div className="flex items-center justify-center mb-4">
             <FileText className="h-10 w-10 text-primary mr-3" />
-            <h2 className="text-3xl md:text-4xl font-bold">Resume Checker</h2>
+            <h1 className="text-3xl md:text-4xl font-bold">Resume Checker</h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Upload your resume and get AI-powered feedback to improve your job prospects
@@ -297,6 +298,8 @@ export const ResumeChecker = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
+
+export default ResumeChecker;
