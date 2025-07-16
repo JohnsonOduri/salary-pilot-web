@@ -178,7 +178,7 @@ Return only JSON. No markdown or explanation.
             <CardHeader>
               <CardTitle className="text-xl">Upload Your Resume</CardTitle>
               <CardDescription>
-                Upload a PDF file for comprehensive analysis
+                Upload a PDF/DOCX file for comprehensive analysis
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -188,7 +188,7 @@ Return only JSON. No markdown or explanation.
                 <Upload className="h-12 w-12 text-muted-foreground group-hover:text-primary mx-auto mb-4 transition-colors" />
                 <p className="text-lg font-medium mb-2">Click to upload your resume</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  PDF files up to 5MB are supported
+                  PDF/DOCX files up to 5MB are supported
                 </p>
                 <Button variant="outline" className="group-hover:border-primary group-hover:text-primary">
                   Choose File
