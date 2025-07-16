@@ -12,7 +12,7 @@ export const Footer = () => {
               <h3 className="text-2xl font-bold">SalaryPilot</h3>
             </div>
             <p className="text-background/70 text-sm leading-relaxed">
-              Navigate your career journey with AI-powered insights for salary prediction, 
+              Navigate your career journey with Machine Learning ( Gradient Boosting Regressor ) and AI-powered insights for salary prediction, 
               resume optimization, and career planning.
             </p>
           </div>

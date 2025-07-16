@@ -314,11 +314,6 @@ const CareerSwitch = () => {
                         ))}
                       </div>
                     </div>
-
-                    <Button variant="outline" className="w-full">
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Start This Path
-                    </Button>
                   </CardContent>
                 </Card>
               ))

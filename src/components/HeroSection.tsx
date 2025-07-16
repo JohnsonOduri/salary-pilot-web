@@ -32,7 +32,7 @@ export const HeroSection = () => {
             
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Discover your earning potential, optimize your resume, and plan your next career move 
-              with AI-powered insights tailored just for you.
+              with Machine Learning and AI-powered insights tailored just for you.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -58,8 +58,12 @@ export const HeroSection = () => {
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">98%</div>
-                <div className="text-sm text-muted-foreground">Accuracy Rate</div>
+                <div className="text-1xl font-bold text-primary">Gradient Boosting Regressor</div>
+                <div className="text-sm text-muted-foreground">ML Model</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">Gemini AI</div>
+                <div className="text-sm text-muted-foreground">Analysis</div>
               </div>
             </div>
           </div>

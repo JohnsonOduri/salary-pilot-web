@@ -289,7 +289,20 @@ const handleFileSelect = async () => {
                     </div>
                   </CardContent>
                 </Card>
-
+              {/* Salary Estimate */}
+                <Card className="shadow-card border-0 bg-gradient-card">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Estimated Salary Range</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center p-4 bg-success/10 rounded-lg">
+                      <div className="text-2xl font-bold text-success mb-1">
+                        ₹{(analysis.salaryRange.min / 100000).toFixed(1)}L - ₹{(analysis.salaryRange.max / 100000).toFixed(1)}L
+                      </div>
+                      <p className="text-sm text-muted-foreground">Annual package range</p>
+                    </div>
+                  </CardContent>
+                </Card>
                 {/* Skill Gaps */}
                 <Card className="shadow-card border-0 bg-gradient-card">
                   <CardHeader>
@@ -342,20 +355,7 @@ const handleFileSelect = async () => {
                   </CardContent>
                 </Card>
 
-                {/* Salary Estimate */}
-                <Card className="shadow-card border-0 bg-gradient-card">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Estimated Salary Range</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center p-4 bg-success/10 rounded-lg">
-                      <div className="text-2xl font-bold text-success mb-1">
-                        ₹{(analysis.salaryRange.min / 100000).toFixed(1)}L - ₹{(analysis.salaryRange.max / 100000).toFixed(1)}L
-                      </div>
-                      <p className="text-sm text-muted-foreground">Annual package range</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                
               </>
             ) : (
               <Card className="shadow-card border-0 bg-gradient-card">
