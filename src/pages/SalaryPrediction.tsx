@@ -105,7 +105,7 @@ const SalaryPrediction = () => {
         "Job Title": matched,
         "Years of Experience": formData.experience
       };
-      const response = await axios.post("http://127.0.0.1:5000/predict", payload);
+      const response = await axios.post( `${import.meta.env.VITE_BACKEND_API_URL}/predict` ||" http://127.0.0.1:5000/predict", payload);
       const predictedUSD = response.data.prediction;
       const predictedINR = Math.round(predictedUSD * 86);
 
