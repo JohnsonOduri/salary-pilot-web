@@ -15,18 +15,18 @@ pipeline = joblib.load("required files/model_pipeline.pkl")
 # Load the label encoders
 label_encoders = joblib.load("required files/label_encoders.pkl")
 
-print("✅ Label Encoders Loaded")
+print("Label Encoders Loaded")
 
 # Required input fields for salary prediction
 REQUIRED_FIELDS = ['Age', 'Gender', 'Education Level', 'Job Title', 'Years of Experience']
 
 
-# -----------------📈 SALARY PREDICTION ----------------------
+# ----------------- SALARY PREDICTION ----------------------
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
         data = request.get_json()
-        print("📥 Incoming data:", data)
+        print(" Incoming data:", data)
 
         if not all(field in data for field in REQUIRED_FIELDS):
             return jsonify({"error": "Missing one or more required fields"}), 400
@@ -57,7 +57,7 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
-# -----------------📄 RESUME TEXT EXTRACTION ----------------------
+# ----------------- RESUME TEXT EXTRACTION ----------------------
 @app.route("/extract", methods=["POST"])
 def extract_text():
     if 'resume' not in request.files:
@@ -81,6 +81,6 @@ def extract_text():
         return jsonify({"error": str(e)}), 500
 
 
-# -----------------🚀 RUN SERVER ----------------------
+# ----------------- RUN SERVER ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
