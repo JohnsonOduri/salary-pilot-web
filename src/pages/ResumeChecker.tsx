@@ -301,7 +301,7 @@ const handleFileSelect = async () => {
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
                       {analysis.skillGaps.map((skill, index) => (
-                        <Badge key={index} variant="outline" className="border-warning text-warning">
+                        <Badge key={index} variant="outline" className="border-foreground text-foreground">
                           {skill}
                         </Badge>
                       ))}
