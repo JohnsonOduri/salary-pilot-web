@@ -1,3 +1,4 @@
+import mammoth from "mammoth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,17 @@ import { FileText, Upload, CheckCircle, AlertCircle, Loader2, Download, ArrowLef
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import * as pdfjsLib from "pdfjs-dist";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min?worker";
+
+// Set the worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.toString();
+
+
+
+
+
 
 interface ResumeAnalysis {
   overallScore: number;
@@ -18,6 +30,8 @@ interface ResumeAnalysis {
   improvements: string[];
 }
 
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`;
+
 const ResumeChecker = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -26,14 +40,78 @@ const ResumeChecker = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = () => {
+  const extractTextFromFile = async (file: File): Promise<string> => {
+  if (file.type === "application/pdf") {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map((item: any) => item.str).join(" ") + "\n";
+    }
+
+    return text;
+  } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+    const arrayBuffer = await file.arrayBuffer();
+    const result = await mammoth.extractRawText({ arrayBuffer });
+    return result.value;
+  }
+
+  return "";
+};
+async function analyzeWithGemini(resumeText: string): Promise<ResumeAnalysis> {
+  const prompt = `
+You are an expert career coach. Given the resume text below, return only JSON with the following keys:
+
+{
+  "overallScore": number,
+  "skillGaps": string[],
+  "suggestedRoles": string[],
+  "salaryRange": { "min": number, "max": number },
+  "improvements": string[]
+}
+
+Resume:
+${resumeText}
+see that min and max are annual salaries in INR
+Return only JSON. No markdown or explanation.
+`;
+
+
+  const response = await axios.post(GEMINI_API_URL, {
+    contents: [{ parts: [{ text: prompt }] }]
+  });
+
+  let rawText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      console.log(rawText);
+  if (!rawText) {
+    throw new Error("No response from Gemini");
+  }
+
+  // 🔥 Remove ```json and ``` from Gemini response
+  rawText = rawText.replace(/```json|```/g, '').trim();
+
+  try {
+    const parsed = JSON.parse(rawText);
+    return parsed;
+  } catch (error) {
+    console.error("❌ Failed to parse:", rawText);
+    throw new Error("Failed to parse Gemini response.");
+  }
+}
+
+
+const handleFileSelect = async () => {
     fileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type !== 'application/pdf') {
+      if (!['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
+
         toast({
           title: "Invalid File Type",
           description: "Please upload a PDF file only.",
@@ -61,52 +139,36 @@ const ResumeChecker = () => {
 
   const analyzeResume = async () => {
     if (!uploadedFile) {
-      toast({
-        title: "No File Selected",
-        description: "Please upload a resume first.",
-        variant: "destructive"
-      });
-      return;
-    }
+    toast({
+      title: "No File Selected",
+      description: "Please upload a resume first.",
+      variant: "destructive"
+    });
+    return;
+  }
 
-    setIsAnalyzing(true);
+  setIsAnalyzing(true);
 
-    // Simulate AI analysis
-    setTimeout(() => {
-      const mockAnalysis: ResumeAnalysis = {
-        overallScore: Math.floor(Math.random() * 30) + 70, // 70-100
-        skillGaps: [
-          "Cloud Computing (AWS/Azure)",
-          "Machine Learning",
-          "Advanced Data Analysis",
-          "Project Management"
-        ],
-        suggestedRoles: [
-          "Senior Software Engineer",
-          "Full Stack Developer",
-          "Technical Lead",
-          "Data Engineer"
-        ],
-        salaryRange: {
-          min: 800000,
-          max: 1200000
-        },
-        improvements: [
-          "Add more quantifiable achievements",
-          "Include relevant certifications",
-          "Optimize for ATS keywords",
-          "Improve project descriptions"
-        ]
-      };
+  try {
+    const resumeText = await extractTextFromFile(uploadedFile);
+    const aiAnalysis = await analyzeWithGemini(resumeText);
 
-      setAnalysis(mockAnalysis);
-      setIsAnalyzing(false);
+    setAnalysis(aiAnalysis);
 
-      toast({
-        title: "Analysis Complete!",
-        description: "Your resume has been analyzed successfully.",
-      });
-    }, 3000);
+    toast({
+      title: "Analysis Complete!",
+      description: "Your resume has been analyzed successfully.",
+    });
+  } catch (err) {
+    console.error("❌ Analysis error:", err);
+    toast({
+      title: "Analysis Failed",
+      description: "There was a problem analyzing your resume.",
+      variant: "destructive"
+    });
+  } finally {
+    setIsAnalyzing(false);
+  }
   };
 
   const getScoreColor = (score: number) => {
@@ -147,7 +209,7 @@ const ResumeChecker = () => {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.docx"
                 onChange={handleFileChange}
                 className="hidden"
               />
@@ -197,8 +259,8 @@ const ResumeChecker = () => {
 
               <div className="text-xs text-muted-foreground space-y-1">
                 <p>• Your resume data is processed securely and not stored</p>
-                <p>• Analysis typically takes 30-60 seconds</p>
-                <p>• Supported format: PDF only</p>
+                <p>• Analysis typically takes 2-5 seconds</p>
+                <p>• Supported format: PDF or Docx only</p>
               </div>
             </CardContent>
           </Card>
@@ -263,6 +325,8 @@ const ResumeChecker = () => {
                     </div>
                   </CardContent>
                 </Card>
+                  
+                  
 
                 {/* Salary Estimate */}
                 <Card className="shadow-card border-0 bg-gradient-card">
@@ -278,12 +342,6 @@ const ResumeChecker = () => {
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Download Report */}
-                <Button variant="outline" className="w-full" size="lg">
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Detailed Report
-                </Button>
               </>
             ) : (
               <Card className="shadow-card border-0 bg-gradient-card">

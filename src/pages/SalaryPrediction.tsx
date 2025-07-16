@@ -104,7 +104,7 @@ async function getBestJobTitleMatch(userJobTitle: string,userSkills: string): Pr
 	}
 }
 async function generateAnalysis(jobTitle: string, salaryUSD: number, skills: string): Promise<string> {
-	const prompt = `Job Title: "${jobTitle}", Predicted Salary: $${salaryUSD}, Skills: ${skills}. Are the skills relevant? Suggest better ones if needed. Estimate a salary range. Give a only 2-3 sentences US market-based analysis not more with plain text only.`;
+	const prompt = `Job Title: "${jobTitle}", Predicted Salary: $${salaryUSD}, Skills: ${skills}. Are the skills relevant? Suggest better ones if needed. Estimate a salary range. Give a only 2-3 sentences US market-based analysis not more in plain text only.`;
 	try {
 		const response = await axios.post(
 			GEMINI_API_URL,
