@@ -20,7 +20,9 @@ print("Label Encoders Loaded")
 # Required input fields for salary prediction
 REQUIRED_FIELDS = ['Age', 'Gender', 'Education Level', 'Job Title', 'Years of Experience']
 
-
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Welcome to the Salary Prediction API"}), 200
 # ----------------- SALARY PREDICTION ----------------------
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -83,4 +85,5 @@ def extract_text():
 
 # ----------------- RUN SERVER ----------------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)
