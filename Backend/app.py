@@ -19,9 +19,10 @@ pipeline = joblib.load("required files/model_pipeline.pkl")
 label_encoders = joblib.load("required files/label_encoders.pkl")
 
 # 🔍 Check encoders on server start
-print("🔍 Label Encoders Loaded:")
-for col, le in label_encoders.items():
-    print(f"{col}: {list(le.classes_)}")
+print(" Label Encoders Loaded:")
+
+
+
 
 # Required input fields
 REQUIRED_FIELDS = ['Age', 'Gender', 'Education Level', 'Job Title', 'Years of Experience']
@@ -32,6 +33,7 @@ def predict():
         # Parse input JSON
         data = request.get_json()
         print("📥 Incoming data:", data)
+        print("📥 Received:",data)
 
         # Check for required fields
         if not all(field in data for field in REQUIRED_FIELDS):

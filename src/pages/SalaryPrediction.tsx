@@ -73,6 +73,16 @@ const JOB_TITLES = [
 	"Receptionist", "Marketing Director", "Social Media Man", "Delivery Driver"
 ];
 
+const normalizeEducation = (value: string): string => {
+	const map: Record<string, string> = {
+		bachelors: "Bachelor's",
+		masters: "Master's",
+		phd: "PhD",
+		diploma: "Diploma",
+		highschool: "High School"
+	};
+	return map[value] || value;
+};
 
 
 async function getBestJobTitleMatch(userJobTitle: string,userSkills: string): Promise<string> {
@@ -120,15 +130,42 @@ const SalaryPrediction = () => {
 
 	const predictSalary = async () => {
 		if (!formData.experience || !formData.education || !formData.jobTitle) {
-			toast({
-				title: "Missing Information",
-				description: "Please fill in all required fields.",
-				variant: "destructive"
-			});
-			
-			return;
-		}
+		toast({
+			title: "Missing Information",
+			description: "Please fill in all required fields.",
+			variant: "destructive"
+		});
+		return;
+	}
 
+	try {
+		console.log("📦 Sending to API:", {
+		Age: formData.age,
+		Gender: formData.gender,
+		"Education Level": normalizeEducation(formData.education),
+		"Job Title": matchedJobTitle,
+		"Years of Experience": formData.experience
+		});
+
+		const response = await axios.post("http://127.0.0.1:5000/predict", {
+			"Age": formData.age,
+			"Gender": formData.gender,
+			"Education Level": normalizeEducation(formData.education),
+			"Job Title": matchedJobTitle,
+			"Years of Experience": formData.experience
+		});
+
+		const salary = response.data.prediction;
+		console.log("Predicted Salary:", salary);
+		// Optional: update state/UI here
+	} catch (error) {
+		console.error("Prediction error:", error);
+		toast({
+			title: "Prediction Failed",
+			description: "Please check your input values.",
+			variant: "destructive"
+		});
+	}
 		setIsLoading(true);
 
 		// 1. Get best match for job title
@@ -289,9 +326,9 @@ setMatchedJobTitle(matched);
 								<CardDescription>
 									Based on current market trends and your profile
 									<br />
-									<p className="font-semibold">
+									<span className="font-semibold">
   										Matched Job Title from Dataset: {matchedJobTitle}
-								</p>
+								</span>
 
 								</CardDescription>
 							</CardHeader>
