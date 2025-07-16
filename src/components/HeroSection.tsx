@@ -35,16 +35,8 @@ export const HeroSection = () => {
               with Machine Learning and AI-powered insights tailored just for you.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              
-              <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary text-primary hover:bg-primary-light/20"
-              >
-              Watch Demo
-              </Button>
-            </div>
+
+            
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-border/50">
