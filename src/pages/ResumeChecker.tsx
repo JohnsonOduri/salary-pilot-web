@@ -77,7 +77,6 @@ Return only JSON. No markdown or explanation.
       }]
     });
     let rawText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    console.log(rawText);
     if (!rawText) {
       throw new Error("No response from Gemini");
     }
