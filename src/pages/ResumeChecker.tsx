@@ -8,16 +8,6 @@ import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min?worker";
-
-// Set the worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.toString();
-
-
-
-
-
 
 interface ResumeAnalysis {
   overallScore: number;
@@ -40,20 +30,28 @@ const ResumeChecker = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const extractTextFromFile = async (file: File): Promise<string> => {
+
+const extractTextFromFile = async (file: File): Promise<string> => {
   if (file.type === "application/pdf") {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let text = "";
+    const formData = new FormData();
+  formData.append("resume", file);
 
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      text += content.items.map((item: any) => item.str).join(" ") + "\n";
-    }
+  const response = await fetch("http://127.0.0.1:5000/extract", {
+    method: "POST",
+    body: formData
+  });
 
-    return text;
-  } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error?.error || "Failed to extract resume text");
+  }
+
+  const data = await response.json();
+  return data.text;
+
+  }
+
+  else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
@@ -61,6 +59,7 @@ const ResumeChecker = () => {
 
   return "";
 };
+
 async function analyzeWithGemini(resumeText: string): Promise<ResumeAnalysis> {
   const prompt = `
 You are an expert career coach. Given the resume text below, return only JSON with the following keys:
@@ -76,7 +75,7 @@ You are an expert career coach. Given the resume text below, return only JSON wi
 Resume:
 ${resumeText}
 see that min and max are annual salaries in INR
-decrease resume score if the resume doesnt look like a resume and 
+decrease resume score if the resume doesnt look like a resume and increase score for well written resumes for encouragement
 Return only JSON. No markdown or explanation.
 `;
 
