@@ -5,9 +5,23 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, TrendingUp, Clock, CheckCircle, Loader2, ArrowLeft } from "lucide-react";
-import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
+
+interface UserCareerForm {
+  currentRole: string;
+  currentSkills: string;
+  interests: string;
+  targetIndustry: string;
+  timeframe: string;
+  budget: string;
+}
+
+
+
+
 interface CareerPath {
   title: string;
   currentSalary: number;
@@ -17,6 +31,58 @@ interface CareerPath {
   steps: string[];
   difficulty: 'Easy' | 'Moderate' | 'Challenging';
 }
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`;
+
+const analyzeWithGemini = async (formData: UserCareerForm): Promise<CareerPath[]> => {
+  const prompt = `
+You're an expert career coach. Based on the user's details below, suggest 3 ideal career transition paths. 
+For each path, provide: 
+- title (string),
+- currentSalary (number, INR),
+- targetSalary (number, INR),
+- timeToTransition (string),
+- requiredSkills (string[]),
+- steps (string[]),
+- difficulty ("Easy", "Moderate", or "Challenging").
+
+Return only JSON in the format: CareerPath[]
+
+User Profile:
+Current Role: ${formData.currentRole}
+Skills: ${formData.currentSkills}
+Interests: ${formData.interests}
+Target Industry: ${formData.targetIndustry}
+Transition Timeframe: ${formData.timeframe}
+Learning Budget: ${formData.budget}
+
+Respond with **only raw JSON**. No explanation.
+`;
+
+  const response = await fetch(GEMINI_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  });
+
+  const result = await response.json();
+  let raw = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+  if (!raw) throw new Error("No response from Gemini");
+
+  raw = raw.replace(/```json|```/g, "").trim();
+
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error("Failed to parse Gemini response:", raw);
+    throw new Error("AI response was not valid JSON.");
+  }
+};
+
 const CareerSwitch = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [careerPaths, setCareerPaths] = useState<CareerPath[]>([]);
@@ -47,41 +113,24 @@ const CareerSwitch = () => {
       return;
     }
     setIsAnalyzing(true);
+try {
+  const paths = await analyzeWithGemini(formData);
+  setCareerPaths(paths);
+  toast({
+    title: "Career Paths Generated!",
+    description: "Based on your profile, here are your best options."
+  });
+} catch (err) {
+  console.error("❌ AI Error:", err);
+  toast({
+    title: "Failed to Generate",
+    description: "AI couldn't generate suggestions. Try again or adjust your inputs.",
+    variant: "destructive"
+  });
+} finally {
+  setIsAnalyzing(false);
+}
 
-    // Simulate AI analysis
-    setTimeout(() => {
-      const mockCareerPaths: CareerPath[] = [{
-        title: "Data Scientist",
-        currentSalary: 600000,
-        targetSalary: 1200000,
-        timeToTransition: "8-12 months",
-        requiredSkills: ["Python", "Machine Learning", "Statistics", "SQL"],
-        steps: ["Complete a data science certification", "Build 3-5 portfolio projects", "Learn advanced ML algorithms", "Practice with real datasets", "Apply to entry-level positions"],
-        difficulty: "Moderate"
-      }, {
-        title: "Product Manager",
-        currentSalary: 600000,
-        targetSalary: 1500000,
-        timeToTransition: "6-10 months",
-        requiredSkills: ["Product Strategy", "Analytics", "User Research", "Agile"],
-        steps: ["Take a product management course", "Lead a cross-functional project", "Build a product portfolio", "Network with product managers", "Practice case studies"],
-        difficulty: "Challenging"
-      }, {
-        title: "UX Designer",
-        currentSalary: 600000,
-        targetSalary: 900000,
-        timeToTransition: "4-8 months",
-        requiredSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
-        steps: ["Learn design fundamentals", "Master design tools", "Create a design portfolio", "Complete UX design projects", "Get feedback from designers"],
-        difficulty: "Easy"
-      }];
-      setCareerPaths(mockCareerPaths);
-      setIsAnalyzing(false);
-      toast({
-        title: "Career Paths Generated!",
-        description: "Based on your profile, here are your best options."
-      });
-    }, 2500);
   };
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
