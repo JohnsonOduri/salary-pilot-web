@@ -85,6 +85,7 @@ const normalizeEducation = (value: string): string => {
 };
 
 
+
 async function getBestJobTitleMatch(userJobTitle: string,userSkills: string): Promise<string> {
 	const prompt = `The user entered job title is: '${userJobTitle}' and skills '${userSkills}'. Suggest the closest matching title (even if nt close just give most suitable one) from the following list: [${JOB_TITLES.join(", ")}]. Return only the best match 1 match.`;
 	try {
@@ -102,14 +103,33 @@ async function getBestJobTitleMatch(userJobTitle: string,userSkills: string): Pr
 		return userJobTitle;
 	}
 }
+async function generateAnalysis(jobTitle: string, salaryUSD: number, skills: string): Promise<string> {
+	const prompt = `Job Title: "${jobTitle}", Predicted Salary: $${salaryUSD}, Skills: ${skills}. Are the skills relevant? Suggest better ones if needed. Estimate a salary range. Give a only 2-3 sentences US market-based analysis not more with plain text only.`;
+	try {
+		const response = await axios.post(
+			GEMINI_API_URL,
+			{
+				contents: [{ parts: [{ text: prompt }] }]
+			}
+		);
+		const analysisText = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+		return analysisText || "No analysis available.";
+	} catch (err) {
+		console.error("Gemini AI analysis error:", err);
+		return "Unable to generate AI analysis at this time.";
+	}
+}
+
 
 const SalaryPrediction = () => {
 	const [matchedJobTitle, setMatchedJobTitle] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [prediction, setPrediction] = useState<{
-		inr: number;
-		usd: number;
-	} | null>(null);
+	inr: number;
+	usd: number;
+	analysis: string;
+} | null>(null);
+
 	const { toast } = useToast();
 
 	const [formData, setFormData] = useState({
@@ -128,6 +148,8 @@ const SalaryPrediction = () => {
 		}));
 	};
 
+
+
 	const predictSalary = async () => {
 		if (!formData.experience || !formData.education || !formData.jobTitle) {
 		toast({
@@ -139,34 +161,50 @@ const SalaryPrediction = () => {
 	}
 
 	try {
-		console.log("📦 Sending to API:", {
-		Age: formData.age,
-		Gender: formData.gender,
-		"Education Level": normalizeEducation(formData.education),
-		"Job Title": matchedJobTitle,
-		"Years of Experience": formData.experience
-		});
+		setIsLoading(true);
 
-		const response = await axios.post("http://127.0.0.1:5000/predict", {
+		// 1. Get best job title match
+		const matched = await getBestJobTitleMatch(formData.jobTitle, formData.skills);
+		setMatchedJobTitle(matched);
+
+		// 2. Predict salary from backend
+		const payload = {
 			"Age": formData.age,
 			"Gender": formData.gender,
 			"Education Level": normalizeEducation(formData.education),
-			"Job Title": matchedJobTitle,
+			"Job Title": matched,
 			"Years of Experience": formData.experience
+		};
+
+		const response = await axios.post("http://127.0.0.1:5000/predict", payload);
+		const predictedUSD = response.data.prediction;
+		const predictedINR = Math.round(predictedUSD * 86);
+
+		// 3. Generate Gemini AI analysis
+		const analysis = await generateAnalysis(matched, predictedUSD, formData.skills);
+
+		// 4. Set final prediction with analysis
+		setPrediction({
+			usd: predictedUSD,
+			inr: predictedINR,
+			analysis: analysis
 		});
 
-		const salary = response.data.prediction;
-		console.log("Predicted Salary:", salary);
-		// Optional: update state/UI here
+		toast({
+			title: "Prediction Complete!",
+			description: `Your salary prediction for "${matched}" has been generated.`,
+		});
 	} catch (error) {
-		console.error("Prediction error:", error);
+		console.error("❌ Prediction error:", error);
 		toast({
 			title: "Prediction Failed",
 			description: "Please check your input values.",
 			variant: "destructive"
 		});
+	} finally {
+		setIsLoading(false);
 	}
-		setIsLoading(true);
+		
 
 		// 1. Get best match for job title
 		
@@ -174,13 +212,7 @@ const matched = await getBestJobTitleMatch(formData.jobTitle,formData.skills);
 setMatchedJobTitle(matched);
 		// 2. Use matchedJobTitle in your prediction logic or API call
 		setTimeout(() => {
-			const baseInr = Math.floor(Math.random() * 500000) + 400000;
-			const baseUsd = Math.floor(baseInr / 80);
-
-			setPrediction({
-				inr: baseInr,
-				usd: baseUsd
-			});
+			
 
 			setIsLoading(false);
 
@@ -206,7 +238,7 @@ setMatchedJobTitle(matched);
 					<h1 className="text-3xl md:text-4xl font-bold">Salary Prediction</h1>
 				</div>
 				<p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-					Get accurate salary predictions based on your experience, skills, and market data
+					Get accurate salary predictions based on your experience, skills, and market data of USA
 				</p>
 			</div>
 
@@ -230,6 +262,16 @@ setMatchedJobTitle(matched);
 									value={formData.experience}
 									onChange={(e) => handleInputChange('experience', e.target.value)}
 								/>
+								{formData.experience && parseInt(formData.experience) < 0  && (
+								<p className="text-sm text-red-500 mt-1">
+									Experience must be at least 0
+								</p>
+							)}
+							{formData.experience && parseInt(formData.experience) > 35 && (
+								<p className="text-sm text-red-500 mt-1">
+									Maximum experience is 35 for accurate prediction
+								</p>
+							)}
 							</div>
 
 							<div className="space-y-2">
@@ -268,6 +310,27 @@ setMatchedJobTitle(matched);
 								value={formData.age}
 								onChange={(e) => handleInputChange('age', e.target.value)}
 							/>
+							{formData.age && parseInt(formData.age) < 18 && (
+								<p className="text-sm text-red-500 mt-1">
+									Age must be 18 or older 
+								</p>
+							)}
+							{formData.age && parseInt(formData.age) >55 && (
+								
+								<p className="text-sm text-red-500 mt-1">
+									Age must be 55 or younger for 
+								</p>
+								
+							)}
+							{formData.age && (parseInt(formData.age)-parseInt(formData.experience)) < 18 && (
+								<p className="text-sm text-red-500 mt-1">
+									We expect you to be of age 18 or older at the time of your first job
+								</p>
+							)}
+							
+
+							
+							
 						</div>
 
 						<div className="space-y-2">
@@ -324,7 +387,7 @@ setMatchedJobTitle(matched);
 									Your Predicted Salary
 								</CardTitle>
 								<CardDescription>
-									Based on current market trends and your profile
+									Based on current market trends of USA and your profile
 									<br />
 									<span className="font-semibold">
   										Matched Job Title from Dataset: {matchedJobTitle}
@@ -336,6 +399,17 @@ setMatchedJobTitle(matched);
 								<div className="grid gap-6">
 									<div className="bg-success/10 rounded-lg p-6 text-center">
 										<div className="flex items-center justify-center mb-2">
+											<span className="text-3xl font-bold text-primary">
+												${prediction.usd.toLocaleString()}
+											</span>
+										</div>
+										<p className="text-sm text-muted-foreground">Annual Salary (USD)</p>
+									</div>
+											
+
+									<div className="bg-primary/10 rounded-lg p-6 text-center">
+
+										<div className="flex items-center justify-center mb-2">
 
 											<span className="text-3xl font-bold text-success">
 												₹{prediction.inr.toLocaleString()}
@@ -343,23 +417,14 @@ setMatchedJobTitle(matched);
 										</div>
 										<p className="text-sm text-muted-foreground">Annual Salary (INR)</p>
 									</div>
-
-									<div className="bg-primary/10 rounded-lg p-6 text-center">
-
-										<div className="flex items-center justify-center mb-2">
-
-											<span className="text-3xl font-bold text-primary">
-												${prediction.usd.toLocaleString()}
-											</span>
-										</div>
-										<p className="text-sm text-muted-foreground">Annual Salary (USD)</p>
-									</div>
 								</div>
 
 								<div className="mt-6 p-4 bg-muted rounded-lg">
 									<h4 className="font-semibold mb-2">AI Analysis</h4>
 									<p className="text-sm text-muted-foreground">
 										{/* text by gemeiniAI */}
+										{prediction.analysis}
+										
 									</p>
 								</div>
 							</CardContent>
