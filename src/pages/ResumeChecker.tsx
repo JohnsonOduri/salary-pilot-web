@@ -226,6 +226,8 @@ Return only JSON. No markdown or explanation.
         animationDelay: '0.2s'
       }}>
             {analysis ? <>
+
+
                 {/* Overall Score */}
                 <Card className="shadow-card border-0 bg-gradient-card">
                   <CardHeader>
@@ -240,6 +242,21 @@ Return only JSON. No markdown or explanation.
                       <p className="text-sm text-muted-foreground mt-2">
                         Out of 100 points
                       </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+              {/* Salary Estimate */}
+                <Card className="shadow-card border-0 bg-gradient-card">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Estimated Salary Range</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center p-4 bg-success/10 rounded-lg">
+                      <div className="text-2xl font-bold text-success mb-1">
+                        ₹{(analysis.salaryRange.min / 100000).toFixed(1)}L - ₹{(analysis.salaryRange.max / 100000).toFixed(1)}L
+                      </div>
+                      <p className="text-sm text-muted-foreground">Annual package range</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -290,20 +307,7 @@ Return only JSON. No markdown or explanation.
                   </CardContent>
                 </Card>
 
-                {/* Salary Estimate */}
-                <Card className="shadow-card border-0 bg-gradient-card">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Estimated Salary Range</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center p-4 bg-success/10 rounded-lg">
-                      <div className="text-2xl font-bold text-success mb-1">
-                        ₹{(analysis.salaryRange.min / 100000).toFixed(1)}L - ₹{(analysis.salaryRange.max / 100000).toFixed(1)}L
-                      </div>
-                      <p className="text-sm text-muted-foreground">Annual package range</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                
               </> : <Card className="shadow-card border-0 bg-gradient-card">
                 <CardContent className="py-12 text-center">
                   <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
