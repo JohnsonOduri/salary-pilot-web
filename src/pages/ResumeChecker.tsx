@@ -156,7 +156,7 @@ Return only JSON. No markdown or explanation.
     if (score >= 75) return "text-warning";
     return "text-destructive";
   };
-  return <div className="max-w-7xl mx-auto p-6 bg-indigo-100">
+  return <div className="max-w-7xl mx-auto p-6 bg-violet-100">
         {/* Back Button */}
         <Link to="/" className="inline-flex items-center text-primary hover:text-primary-glow mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
