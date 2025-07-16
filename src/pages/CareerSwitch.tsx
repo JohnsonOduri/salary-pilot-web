@@ -8,7 +8,6 @@ import { MapPin, TrendingUp, Clock, CheckCircle, Loader2, ArrowLeft } from "luci
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-
 interface CareerPath {
   title: string;
   currentSalary: number;
@@ -18,12 +17,12 @@ interface CareerPath {
   steps: string[];
   difficulty: 'Easy' | 'Moderate' | 'Challenging';
 }
-
 const CareerSwitch = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [careerPaths, setCareerPaths] = useState<CareerPath[]>([]);
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const [formData, setFormData] = useState({
     currentRole: '',
     currentSkills: '',
@@ -32,14 +31,12 @@ const CareerSwitch = () => {
     timeframe: '',
     budget: ''
   });
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
   const generateCareerPaths = async () => {
     if (!formData.currentRole || !formData.interests) {
       toast({
@@ -49,81 +46,56 @@ const CareerSwitch = () => {
       });
       return;
     }
-
     setIsAnalyzing(true);
 
     // Simulate AI analysis
     setTimeout(() => {
-      const mockCareerPaths: CareerPath[] = [
-        {
-          title: "Data Scientist",
-          currentSalary: 600000,
-          targetSalary: 1200000,
-          timeToTransition: "8-12 months",
-          requiredSkills: ["Python", "Machine Learning", "Statistics", "SQL"],
-          steps: [
-            "Complete a data science certification",
-            "Build 3-5 portfolio projects",
-            "Learn advanced ML algorithms",
-            "Practice with real datasets",
-            "Apply to entry-level positions"
-          ],
-          difficulty: "Moderate"
-        },
-        {
-          title: "Product Manager",
-          currentSalary: 600000,
-          targetSalary: 1500000,
-          timeToTransition: "6-10 months",
-          requiredSkills: ["Product Strategy", "Analytics", "User Research", "Agile"],
-          steps: [
-            "Take a product management course",
-            "Lead a cross-functional project",
-            "Build a product portfolio",
-            "Network with product managers",
-            "Practice case studies"
-          ],
-          difficulty: "Challenging"
-        },
-        {
-          title: "UX Designer",
-          currentSalary: 600000,
-          targetSalary: 900000,
-          timeToTransition: "4-8 months",
-          requiredSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
-          steps: [
-            "Learn design fundamentals",
-            "Master design tools",
-            "Create a design portfolio",
-            "Complete UX design projects",
-            "Get feedback from designers"
-          ],
-          difficulty: "Easy"
-        }
-      ];
-
+      const mockCareerPaths: CareerPath[] = [{
+        title: "Data Scientist",
+        currentSalary: 600000,
+        targetSalary: 1200000,
+        timeToTransition: "8-12 months",
+        requiredSkills: ["Python", "Machine Learning", "Statistics", "SQL"],
+        steps: ["Complete a data science certification", "Build 3-5 portfolio projects", "Learn advanced ML algorithms", "Practice with real datasets", "Apply to entry-level positions"],
+        difficulty: "Moderate"
+      }, {
+        title: "Product Manager",
+        currentSalary: 600000,
+        targetSalary: 1500000,
+        timeToTransition: "6-10 months",
+        requiredSkills: ["Product Strategy", "Analytics", "User Research", "Agile"],
+        steps: ["Take a product management course", "Lead a cross-functional project", "Build a product portfolio", "Network with product managers", "Practice case studies"],
+        difficulty: "Challenging"
+      }, {
+        title: "UX Designer",
+        currentSalary: 600000,
+        targetSalary: 900000,
+        timeToTransition: "4-8 months",
+        requiredSkills: ["Figma", "User Research", "Prototyping", "Design Systems"],
+        steps: ["Learn design fundamentals", "Master design tools", "Create a design portfolio", "Complete UX design projects", "Get feedback from designers"],
+        difficulty: "Easy"
+      }];
       setCareerPaths(mockCareerPaths);
       setIsAnalyzing(false);
-
       toast({
         title: "Career Paths Generated!",
-        description: "Based on your profile, here are your best options.",
+        description: "Based on your profile, here are your best options."
       });
     }, 2500);
   };
-
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Easy': return 'bg-success text-success-foreground';
-      case 'Moderate': return 'bg-warning text-warning-foreground';
-      case 'Challenging': return 'bg-destructive text-destructive-foreground';
-      default: return 'bg-muted text-muted-foreground';
+      case 'Easy':
+        return 'bg-success text-success-foreground';
+      case 'Moderate':
+        return 'bg-warning text-warning-foreground';
+      case 'Challenging':
+        return 'bg-destructive text-destructive-foreground';
+      default:
+        return 'bg-muted text-muted-foreground';
     }
   };
-
-  return (
-   
-      <div className="max-w-7xl mx-auto p-6">
+  return <div className="max-w-7xl mx-auto p-6 bg-violet-100">
         {/* Back Button */}
         <Link to="/" className="inline-flex items-center text-primary hover:text-primary-glow mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -153,37 +125,22 @@ const CareerSwitch = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentRole">Current Role *</Label>
-                  <Input
-                    id="currentRole"
-                    placeholder="e.g., Software Engineer"
-                    value={formData.currentRole}
-                    onChange={(e) => handleInputChange('currentRole', e.target.value)}
-                  />
+                  <Input id="currentRole" placeholder="e.g., Software Engineer" value={formData.currentRole} onChange={e => handleInputChange('currentRole', e.target.value)} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="currentSkills">Current Skills</Label>
-                  <Input
-                    id="currentSkills"
-                    placeholder="e.g., React, Python, Leadership"
-                    value={formData.currentSkills}
-                    onChange={(e) => handleInputChange('currentSkills', e.target.value)}
-                  />
+                  <Input id="currentSkills" placeholder="e.g., React, Python, Leadership" value={formData.currentSkills} onChange={e => handleInputChange('currentSkills', e.target.value)} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="interests">Interests & Passions *</Label>
-                  <Input
-                    id="interests"
-                    placeholder="e.g., Data Analysis, Design, Strategy"
-                    value={formData.interests}
-                    onChange={(e) => handleInputChange('interests', e.target.value)}
-                  />
+                  <Input id="interests" placeholder="e.g., Data Analysis, Design, Strategy" value={formData.interests} onChange={e => handleInputChange('interests', e.target.value)} />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="targetIndustry">Target Industry</Label>
-                  <Select onValueChange={(value) => handleInputChange('targetIndustry', value)}>
+                  <Select onValueChange={value => handleInputChange('targetIndustry', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select industry" />
                     </SelectTrigger>
@@ -200,7 +157,7 @@ const CareerSwitch = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="timeframe">Transition Timeframe</Label>
-                  <Select onValueChange={(value) => handleInputChange('timeframe', value)}>
+                  <Select onValueChange={value => handleInputChange('timeframe', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select timeframe" />
                     </SelectTrigger>
@@ -215,7 +172,7 @@ const CareerSwitch = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="budget">Learning Budget</Label>
-                  <Select onValueChange={(value) => handleInputChange('budget', value)}>
+                  <Select onValueChange={value => handleInputChange('budget', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select budget range" />
                     </SelectTrigger>
@@ -228,30 +185,21 @@ const CareerSwitch = () => {
                   </Select>
                 </div>
 
-                <Button 
-                  onClick={generateCareerPaths}
-                  disabled={isAnalyzing}
-                  className="w-full bg-gradient-primary hover:opacity-90"
-                  size="lg"
-                >
-                  {isAnalyzing ? (
-                    <>
+                <Button onClick={generateCareerPaths} disabled={isAnalyzing} className="w-full bg-gradient-primary hover:opacity-90" size="lg">
+                  {isAnalyzing ? <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                       Analyzing...
-                    </>
-                  ) : (
-                    'Find Career Paths'
-                  )}
+                    </> : 'Find Career Paths'}
                 </Button>
               </CardContent>
             </Card>
           </div>
 
           {/* Career Path Results */}
-          <div className="lg:col-span-2 space-y-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            {careerPaths.length > 0 ? (
-              careerPaths.map((path, index) => (
-                <Card key={index} className="shadow-card border-0 bg-gradient-card">
+          <div className="lg:col-span-2 space-y-6 animate-fade-in" style={{
+        animationDelay: '0.2s'
+      }}>
+            {careerPaths.length > 0 ? careerPaths.map((path, index) => <Card key={index} className="shadow-card border-0 bg-gradient-card">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
@@ -270,7 +218,7 @@ const CareerSwitch = () => {
                         <div className="text-sm text-muted-foreground">Salary Growth</div>
                         <div className="flex items-center text-success font-semibold">
                           <TrendingUp className="h-4 w-4 mr-1" />
-                          +{Math.round(((path.targetSalary - path.currentSalary) / path.currentSalary) * 100)}%
+                          +{Math.round((path.targetSalary - path.currentSalary) / path.currentSalary * 100)}%
                         </div>
                       </div>
                     </div>
@@ -292,11 +240,9 @@ const CareerSwitch = () => {
                     <div>
                       <h4 className="font-semibold mb-3">Skills to Develop</h4>
                       <div className="flex flex-wrap gap-2">
-                        {path.requiredSkills.map((skill, skillIndex) => (
-                          <Badge key={skillIndex} variant="outline" className="border-primary text-primary">
+                        {path.requiredSkills.map((skill, skillIndex) => <Badge key={skillIndex} variant="outline" className="border-primary text-primary">
                             {skill}
-                          </Badge>
-                        ))}
+                          </Badge>)}
                       </div>
                     </div>
 
@@ -304,34 +250,25 @@ const CareerSwitch = () => {
                     <div>
                       <h4 className="font-semibold mb-3">Step-by-Step Plan</h4>
                       <div className="space-y-3">
-                        {path.steps.map((step, stepIndex) => (
-                          <div key={stepIndex} className="flex items-start">
+                        {path.steps.map((step, stepIndex) => <div key={stepIndex} className="flex items-start">
                             <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
                               <span className="text-sm font-semibold text-primary">{stepIndex + 1}</span>
                             </div>
                             <p className="text-sm">{step}</p>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Card className="shadow-card border-0 bg-gradient-card">
+                </Card>) : <Card className="shadow-card border-0 bg-gradient-card">
                 <CardContent className="py-16 text-center">
                   <MapPin className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                   <p className="text-muted-foreground">
                     Fill out your details to discover personalized career transition paths
                   </p>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </div>
         </div>
-      </div>
-
-  );
+      </div>;
 };
-
 export default CareerSwitch;
