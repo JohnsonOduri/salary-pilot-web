@@ -76,6 +76,7 @@ You are an expert career coach. Given the resume text below, return only JSON wi
 Resume:
 ${resumeText}
 see that min and max are annual salaries in INR
+decrease resume score if the resume doesnt look like a resume and 
 Return only JSON. No markdown or explanation.
 `;
 
@@ -326,7 +327,21 @@ const handleFileSelect = async () => {
                   </CardContent>
                 </Card>
                   
-                  
+                  {/* Improvements */}
+                <Card className="shadow-card border-0 bg-gradient-card">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Suggested Improvements</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {analysis.improvements.map((improvement, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
+                          <span className="font-medium">{improvement}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
 
                 {/* Salary Estimate */}
                 <Card className="shadow-card border-0 bg-gradient-card">
