@@ -1,30 +1,28 @@
 # 💼 SalaryPilot
 
-**SalaryPilot** is an Machine Learning and AI-powered web platform that helps users make smarter career decisions by predicting salaries, analyzing resumes, and suggesting career switch paths based on skills and interests.
+**SalaryPilot** is an AI-powered web platform that helps users make smarter career decisions by predicting salaries, analyzing resumes, and suggesting career switch paths based on skills and interests.
 
-Live Demo: [https://salary-pilot-web.vercel.app/](https://salary-pilot-web.vercel.app/)
+Live Demo: [https://salarypilot.onrender.com](https://salarypilot.onrender.com)
 
 ---
 
 ## 🚀 Features
 
 - 🧠 **Salary Prediction**  
-  Predict your estimated income based on age, education, job title, experience, and gender using a trained Machine Learning model.
+  Predict your estimated income based on age, education, job title, experience, and gender using a trained ML model.
 
 - 📄 **Resume Checker**  
   Upload your resume (PDF/DOCX) to get:
-  - Estimated salary range
   - AI-generated resume score
   - Skill gap analysis
   - Recommended roles
-  
+  - Estimated salary range
 
 - 🔁 **Career Switch Planner**  
   Enter your current role, skills, and interests to:
-  - View potential salary differences and roadmaps
   - Discover possible career transitions
   - Identify required skills and resources
-  
+  - View potential salary differences and roadmaps
 
 ---
 
@@ -48,4 +46,5 @@ Live Demo: [https://salary-pilot-web.vercel.app/](https://salary-pilot-web.verce
 
 ---
 
+## 📁 Project Structure
 
