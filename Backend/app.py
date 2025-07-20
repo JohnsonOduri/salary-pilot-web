@@ -5,7 +5,7 @@ import pandas as pd
 import os
 import fitz  # PyMuPDF
 
-# Initialize Flask app
+
 app = Flask(__name__)
 CORS(app)
 
@@ -17,13 +17,13 @@ label_encoders = joblib.load("required files/label_encoders.pkl")
 
 print("Label Encoders Loaded")
 
-# Required input fields for salary prediction
+
 REQUIRED_FIELDS = ['Age', 'Gender', 'Education Level', 'Job Title', 'Years of Experience']
 
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Welcome to the Salary Prediction API"}), 200
-# ----------------- SALARY PREDICTION ----------------------
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
